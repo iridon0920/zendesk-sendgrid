@@ -8,9 +8,8 @@
   "private": true,
   "location": {
     "support": {
-      "ticket_sidebar": {
-        "url": "assets/iframe.html",
-        "flexible": true
+      "nav_bar": {
+        "url": "assets/iframe.html"
       }
     }
   },
