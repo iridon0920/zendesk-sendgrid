@@ -23,14 +23,18 @@ module.exports = {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist/assets')
   },
+  devtool: 'source-map',
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx', '.json', '.css']
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|ts|tsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          presets: ['@babel/preset-env', '@babel/preset-react']
+          presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript']
         }
       },
       {
