@@ -1,36 +1,36 @@
-export function sendEmailBySendGrid (client) {
+export function sendEmailBySendGrid(client) {
   // sendgridでメールを送信する
   const options = {
-    url: 'https://api.sendgrid.com/v3/mail/send',
-    type: 'POST',
+    url: "https://api.sendgrid.com/v3/mail/send",
+    type: "POST",
     headers: {
-      Authorization: 'Bearer {{setting.sendgridApiKey}}'
+      Authorization: "Bearer {{setting.sendgridApiKey}}",
     },
-    contentType: 'application/json',
+    contentType: "application/json",
     data: JSON.stringify({
       personalizations: [
         {
           to: [
             {
-              email: 'irii.keita@classmethod.jp'
-            }
+              email: "irii.keita@classmethod.jp",
+            },
           ],
-          subject: 'test'
-        }
+          subject: "test",
+        },
       ],
       from: {
-        email: 'irii.keita@classmethod.jp'
+        email: "irii.keita@classmethod.jp",
       },
       content: [
         {
-          type: 'text/plain',
-          value: 'test'
-        }
-      ]
+          type: "text/plain",
+          value: "test",
+        },
+      ],
     }),
-    secure: true
-  }
+    secure: true,
+  };
   this._client.request(options).then((res) => {
-    console.log(res)
-  })
+    console.log(res);
+  });
 }
