@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Body,
   Cell,
@@ -11,7 +11,7 @@ import {
 import { KEY_CODES } from "@zendeskgarden/container-utilities";
 import { Field, Checkbox, Label } from "@zendeskgarden/react-forms";
 
-interface IUser {
+export interface IUser {
   id: string;
   name: string;
   email: string;
@@ -61,6 +61,9 @@ export const UsersTable: React.FC<UsersTableProps> = ({
   const [focusedRowIndex, setFocusedRowIndex] = useState<number | undefined>(
     undefined
   );
+  useEffect(() => {
+    setData(users.map((user) => ({ ...user, selected: false })));
+  }, [users]);
 
   return (
     <div style={{ overflowX: "auto" }}>

@@ -8,5 +8,10 @@ export const GetEndUsers = async (client: any) => {
     },
   };
 
-  return client.request(options);
+  const result = await client.request(options);
+  return result.users.map((user: any) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }));
 };
