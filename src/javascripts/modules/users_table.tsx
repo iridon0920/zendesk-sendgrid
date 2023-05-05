@@ -66,91 +66,89 @@ export const UsersTable: React.FC<UsersTableProps> = ({
   }, [users]);
 
   return (
-    <div style={{ overflowX: "auto" }}>
-      <Table style={{ minWidth: 500 }}>
-        <Head>
-          <HeaderRow>
-            <HeaderCell isMinimum>
+    <Table style={{ minWidth: 500 }}>
+      <Head>
+        <HeaderRow>
+          <HeaderCell isMinimum>
+            <Field>
+              <Checkbox
+                indeterminate={isSelectAllIndeterminate(data)}
+                checked={isSelectAllChecked(data)}
+                onChange={(e) => {
+                  const updatedRows = data.map((row) => ({
+                    ...row,
+                    selected: e.target.checked,
+                  }));
+
+                  setData(updatedRows);
+                  const selectedUsers = getSelectedUsers(updatedRows);
+                  onSelectedUsersChange(selectedUsers);
+                }}
+              >
+                <Label hidden>Select all tickets</Label>
+              </Checkbox>
+            </Field>
+          </HeaderCell>
+          <HeaderCell>Name</HeaderCell>
+          <HeaderCell>Email</HeaderCell>
+        </HeaderRow>
+      </Head>
+      <Body>
+        {data.map((row, index) => (
+          <Row key={row.id} isSelected={row.selected}>
+            <Cell isMinimum>
               <Field>
                 <Checkbox
-                  indeterminate={isSelectAllIndeterminate(data)}
-                  checked={isSelectAllChecked(data)}
+                  checked={row.selected}
+                  onKeyDown={(e) => {
+                    if (e.keyCode === KEY_CODES.SHIFT) {
+                      setShiftEnabled(true);
+                    }
+                  }}
+                  onKeyUp={() => {
+                    setShiftEnabled(false);
+                  }}
                   onChange={(e) => {
-                    const updatedRows = data.map((row) => ({
-                      ...row,
-                      selected: e.target.checked,
-                    }));
+                    const updatedRows = [...data];
+
+                    if (shiftEnabled && focusedRowIndex !== undefined) {
+                      const startIndex = Math.min(focusedRowIndex, index);
+                      const endIndex = Math.max(focusedRowIndex, index);
+
+                      const isAllChecked = updatedRows
+                        .slice(startIndex, endIndex + 1)
+                        .every((slicedRow) => slicedRow.selected);
+
+                      for (let x = startIndex; x <= endIndex; x++) {
+                        if (x === index && isAllChecked) {
+                          updatedRows[x].selected = true;
+                          continue;
+                        }
+
+                        updatedRows[x].selected = !isAllChecked;
+                      }
+                    } else if (e.target.checked === true) {
+                      updatedRows[index].selected = true;
+                    } else {
+                      updatedRows[index].selected = false;
+                    }
 
                     setData(updatedRows);
+                    setFocusedRowIndex(index);
+
                     const selectedUsers = getSelectedUsers(updatedRows);
                     onSelectedUsersChange(selectedUsers);
                   }}
                 >
-                  <Label hidden>Select all tickets</Label>
+                  <Label hidden>Select ticket for {row.name}</Label>
                 </Checkbox>
               </Field>
-            </HeaderCell>
-            <HeaderCell>Name</HeaderCell>
-            <HeaderCell>Email</HeaderCell>
-          </HeaderRow>
-        </Head>
-        <Body>
-          {data.map((row, index) => (
-            <Row key={row.id} isSelected={row.selected}>
-              <Cell isMinimum>
-                <Field>
-                  <Checkbox
-                    checked={row.selected}
-                    onKeyDown={(e) => {
-                      if (e.keyCode === KEY_CODES.SHIFT) {
-                        setShiftEnabled(true);
-                      }
-                    }}
-                    onKeyUp={() => {
-                      setShiftEnabled(false);
-                    }}
-                    onChange={(e) => {
-                      const updatedRows = [...data];
-
-                      if (shiftEnabled && focusedRowIndex !== undefined) {
-                        const startIndex = Math.min(focusedRowIndex, index);
-                        const endIndex = Math.max(focusedRowIndex, index);
-
-                        const isAllChecked = updatedRows
-                          .slice(startIndex, endIndex + 1)
-                          .every((slicedRow) => slicedRow.selected);
-
-                        for (let x = startIndex; x <= endIndex; x++) {
-                          if (x === index && isAllChecked) {
-                            updatedRows[x].selected = true;
-                            continue;
-                          }
-
-                          updatedRows[x].selected = !isAllChecked;
-                        }
-                      } else if (e.target.checked === true) {
-                        updatedRows[index].selected = true;
-                      } else {
-                        updatedRows[index].selected = false;
-                      }
-
-                      setData(updatedRows);
-                      setFocusedRowIndex(index);
-
-                      const selectedUsers = getSelectedUsers(updatedRows);
-                      onSelectedUsersChange(selectedUsers);
-                    }}
-                  >
-                    <Label hidden>Select ticket for {row.name}</Label>
-                  </Checkbox>
-                </Field>
-              </Cell>
-              <Cell>{row.name}</Cell>
-              <Cell>{row.email}</Cell>
-            </Row>
-          ))}
-        </Body>
-      </Table>
-    </div>
+            </Cell>
+            <Cell>{row.name}</Cell>
+            <Cell>{row.email}</Cell>
+          </Row>
+        ))}
+      </Body>
+    </Table>
   );
 };

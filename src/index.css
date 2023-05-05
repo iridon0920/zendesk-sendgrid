@@ -6,3 +6,17 @@
   width: 40px;
 }
 
+.container {
+  display: flex;
+}
+
+.table-container {
+  width: 50%;
+}
+
+.textarea-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 10px 12px;
+}
