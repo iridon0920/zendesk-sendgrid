@@ -1,4 +1,8 @@
-export function sendEmailBySendGrid(client) {
+export const sendEmailBySendGrid = async (
+  client: any,
+  emails: string[],
+  text: string
+) => {
   // sendgridでメールを送信する
   const options = {
     url: "https://api.sendgrid.com/v3/mail/send",
@@ -10,11 +14,11 @@ export function sendEmailBySendGrid(client) {
     data: JSON.stringify({
       personalizations: [
         {
-          to: [
-            {
-              email: "irii.keita@classmethod.jp",
-            },
-          ],
+          to: emails.map((email) => {
+            return {
+              email,
+            };
+          }),
           subject: "test",
         },
       ],
@@ -24,13 +28,12 @@ export function sendEmailBySendGrid(client) {
       content: [
         {
           type: "text/plain",
-          value: "test",
+          value: text,
         },
       ],
     }),
     secure: true,
   };
-  this._client.request(options).then((res) => {
-    console.log(res);
-  });
-}
+  const res = await client.request(options);
+  console.log(res);
+};

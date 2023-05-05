@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { type IUser, UsersTable } from "./users_table";
 import { GetEndUsers } from "../lib/get_end_users";
 import { MailInput } from "./mail_input";
+import { Button } from "@zendeskgarden/react-buttons";
+import { sendEmailBySendGrid } from "../lib/sendgrid";
 
 export const Container: React.FC<{ client: any }> = ({ client }) => {
   const [users, setUsers] = useState([] as IUser[]);
@@ -32,6 +34,22 @@ export const Container: React.FC<{ client: any }> = ({ client }) => {
       </div>
       <div className="textarea-container">
         <MailInput onInputChange={handleInputChange} />
+        <Button
+          onClick={() => {
+            const sendEmail = async () => {
+              await sendEmailBySendGrid(
+                client,
+                selectedUsers.map((user) => user.email),
+                mailText
+              );
+            };
+            sendEmail().catch((error) => {
+              console.error("Failed to send email:", error);
+            });
+          }}
+        >
+          送信
+        </Button>
       </div>
     </div>
   );
