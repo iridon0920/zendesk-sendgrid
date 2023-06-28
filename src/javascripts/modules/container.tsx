@@ -4,11 +4,13 @@ import { GetEndUsers } from "../lib/get_end_users";
 import { MailInput } from "./mail_input";
 import { Button } from "@zendeskgarden/react-buttons";
 import { sendEmailBySendGrid } from "../lib/sendgrid";
+import { Loader } from "./loader";
 
 export const Container: React.FC<{ client: any }> = ({ client }) => {
   const [users, setUsers] = useState([] as IUser[]);
   const [selectedUsers, setSelectedUsers] = useState([] as IUser[]);
   const [mailText, setMailText] = useState("");
+  const [isSending, setIsSending] = useState(false);
   useEffect(() => {
     const fetchEndUsers = async () => {
       const users = await GetEndUsers(client);
@@ -23,6 +25,7 @@ export const Container: React.FC<{ client: any }> = ({ client }) => {
   const handleInputChange = (text: string) => {
     setMailText(text);
   };
+  const isSendUiDisabled = isSending || selectedUsers.length === 0;
 
   return (
     <div className="container">
@@ -30,23 +33,35 @@ export const Container: React.FC<{ client: any }> = ({ client }) => {
         <UsersTable
           users={users}
           onSelectedUsersChange={handleSelectedUsersChange}
+          disabled={isSending}
         />
       </div>
       <div className="textarea-container">
-        <MailInput onInputChange={handleInputChange} />
+        {isSending && (
+          <Loader
+            style={{ position: "absolute", top: "7%", left: "50%", zIndex: 1 }}
+          />
+        )}
+        <MailInput
+          onInputChange={handleInputChange}
+          disabled={isSendUiDisabled}
+        />
         <Button
           onClick={() => {
             const sendEmail = async () => {
+              setIsSending(true);
               await sendEmailBySendGrid(
                 client,
                 selectedUsers.map((user) => user.email),
                 mailText
               );
+              setIsSending(false);
             };
             sendEmail().catch((error) => {
               console.error("Failed to send email:", error);
             });
           }}
+          disabled={isSendUiDisabled}
         >
           送信
         </Button>

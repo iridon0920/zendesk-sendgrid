@@ -3,7 +3,8 @@ import { Field, Label, Textarea } from "@zendeskgarden/react-forms";
 
 export const MailInput: React.FC<{
   onInputChange: (text: string) => void;
-}> = ({ onInputChange }) => {
+  disabled?: boolean;
+}> = ({ onInputChange, disabled }) => {
   return (
     <Field>
       <Label>メール本文</Label>
@@ -12,6 +13,7 @@ export const MailInput: React.FC<{
         onChange={(e) => {
           onInputChange(e.target.value);
         }}
+        disabled={disabled}
       />
     </Field>
   );

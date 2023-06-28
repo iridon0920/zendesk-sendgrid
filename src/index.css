@@ -17,6 +17,7 @@
 .textarea-container {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 50%;
   padding: 10px 12px;
 }

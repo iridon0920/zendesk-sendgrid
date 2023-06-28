@@ -23,6 +23,7 @@ interface IUserRow extends IUser {
 interface UsersTableProps {
   users: IUser[];
   onSelectedUsersChange: (selectedUsers: IUser[]) => void;
+  disabled?: boolean;
 }
 
 const isSelectAllIndeterminate = (rows: IUserRow[]) => {
@@ -53,6 +54,7 @@ const getSelectedUsers = (rows: IUserRow[]): IUser[] => {
 export const UsersTable: React.FC<UsersTableProps> = ({
   users,
   onSelectedUsersChange,
+  disabled,
 }) => {
   const [data, setData] = useState(
     users.map((user) => ({ ...user, selected: false }))
@@ -74,6 +76,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
               <Checkbox
                 indeterminate={isSelectAllIndeterminate(data)}
                 checked={isSelectAllChecked(data)}
+                disabled={disabled}
                 onChange={(e) => {
                   const updatedRows = data.map((row) => ({
                     ...row,
@@ -100,6 +103,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
               <Field>
                 <Checkbox
                   checked={row.selected}
+                  disabled={disabled}
                   onKeyDown={(e) => {
                     if (e.keyCode === KEY_CODES.SHIFT) {
                       setShiftEnabled(true);
@@ -127,11 +131,7 @@ export const UsersTable: React.FC<UsersTableProps> = ({
 
                         updatedRows[x].selected = !isAllChecked;
                       }
-                    } else if (e.target.checked === true) {
-                      updatedRows[index].selected = true;
-                    } else {
-                      updatedRows[index].selected = false;
-                    }
+                    } else updatedRows[index].selected = !!e.target.checked;
 
                     setData(updatedRows);
                     setFocusedRowIndex(index);
