@@ -18,7 +18,9 @@
     "build:dev": "webpack --mode development",
     "build": "webpack --mode production",
     "lint": "standard",
-    "start": "zcli apps:server dist"
+    "start": "zcli apps:server dist",
+    "deploy": "zcli apps:create dist",
+    "update": "zcli apps:update dist"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
