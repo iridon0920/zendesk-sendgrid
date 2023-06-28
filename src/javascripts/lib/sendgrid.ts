@@ -14,11 +14,7 @@ export const sendEmailBySendGrid = async (
     data: JSON.stringify({
       personalizations: [
         {
-          to: emails.map((email) => {
-            return {
-              email,
-            };
-          }),
+          to: emails.map((email) => ({ email })),
           subject: "test",
         },
       ],
