@@ -1,6 +1,9 @@
-export const GetEndUsers = async (client: any) => {
+export const GetEndUsers = async (client: any, organizationId: string) => {
   const options = {
-    url: "/api/v2/users.json",
+    url:
+      organizationId !== ""
+        ? `/api/v2/organizations/${organizationId}/users.json`
+        : "/api/v2/users.json",
     type: "GET",
     autoRetry: false,
     data: {
