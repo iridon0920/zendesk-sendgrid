@@ -5,16 +5,18 @@ import { MailInput } from "./mail_input";
 import { Button } from "@zendeskgarden/react-buttons";
 import { sendEmailBySendGrid } from "../lib/sendgrid";
 import { Loader } from "./loader";
+import { Notifications } from "./notifications";
 
 export const Container: React.FC<{ client: any }> = ({ client }) => {
   const [users, setUsers] = useState([] as IUser[]);
   const [selectedUsers, setSelectedUsers] = useState([] as IUser[]);
   const [mailText, setMailText] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [notificationText, setNotificationText] = useState("");
+
   useEffect(() => {
     const fetchEndUsers = async () => {
       const users = await GetEndUsers(client);
-      console.log(users);
       setUsers(users);
     };
     fetchEndUsers().catch(console.error);
@@ -29,6 +31,7 @@ export const Container: React.FC<{ client: any }> = ({ client }) => {
 
   return (
     <div className="container">
+      <Notifications text={notificationText} />
       <div className="table-container">
         <UsersTable
           users={users}
@@ -56,6 +59,7 @@ export const Container: React.FC<{ client: any }> = ({ client }) => {
                 mailText
               );
               setIsSending(false);
+              setNotificationText("メールを送信しました。");
             };
             sendEmail().catch((error) => {
               console.error("Failed to send email:", error);
